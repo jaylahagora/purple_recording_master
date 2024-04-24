@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dialog_width">450dp</dimen>
+    <dimen name="dialog_elevation">15dp</dimen>
+    <dimen name="dialog_recording_tb_margin">20dp</dimen>
+    <dimen name="dialog_recording_lr_padding">5dp</dimen>
+    <dimen name="dialog_recording_text_size">20sp</dimen>
+    <dimen name="dialog_view_lr_margin">20dp</dimen>
+    <dimen name="dialog_view_tb_margin">15dp</dimen>
+    <dimen name="dialog_bottom_ll_btn_height">40dp</dimen>
+    <dimen name="dialog_bottom_ll_top_margin">20dp</dimen>
+    <dimen name="dialog_bottom_btn_text_size">20sp</dimen>
+</resources>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/black_opacity_seventy">
+
+    <LinearLayout
+        android:layout_width="@dimen/dialog_width"
+        android:id="@+id/dialogdeletebg"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+
+        android:elevation="@dimen/dialog_elevation"
+        android:orientation="vertical">
+<!--        android:background="@drawable/bg_dialog"-->
+
+        <TextView
+            android:id="@+id/header_simple_recording"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dialog_recording_tb_margin"
+
+            android:focusable="false"
+            android:fontFamily="@font/roboto_medium_500"
+            android:paddingStart="@dimen/dialog_recording_lr_padding"
+            android:paddingEnd="@dimen/dialog_recording_lr_padding"
+            android:text="@string/str_alert"
+            android:textColor="@color/dialog_start_recording_header_text"
+            android:textSize="@dimen/dialog_delete_alert_header_text_size" />
+<!--        android:background="@drawable/bg_header_recording_sart"-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="@dimen/dialog_view_lr_margin"
+            android:layout_marginTop="@dimen/dialog_view_tb_margin"
+            android:layout_marginRight="@dimen/dialog_view_lr_margin"
+            android:background="@color/white_opacity_seventy" />
+
+
+        <TextView
+            android:id="@+id/text_instruction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dialog_et_first_margin_top"
+            android:fontFamily="@font/roboto_regular_400"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dialog_view_lr_margin"
+            android:paddingRight="@dimen/dialog_view_lr_margin"
+            android:text="@string/are_you_sure_want_to_delete_s"
+            android:textColor="@color/white"
+            android:textSize="@dimen/dialog_delete_alert_text_size"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:padding="10dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/sd_operate_step"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dialog_bottom_ll_btn_height"
+            android:layout_marginTop="@dimen/dialog_bottom_ll_top_margin"
+            android:background="@drawable/bg_dialog_bottom"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/btn_cancel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:layout_weight="1"
+
+                android:focusable="true"
+                android:fontFamily="@font/roboto_medium_500"
+                android:gravity="center"
+                android:text="@string/dialog_no"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dialog_bottom_btn_text_size" />
+<!--            android:background="@drawable/bg_dialog_bottom_left"-->
+
+            <TextView
+                android:id="@+id/btn_ok"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:layout_weight="1"
+
+                android:focusable="true"
+                android:fontFamily="@font/roboto_medium_500"
+                android:gravity="center"
+                android:text="@string/dialog_yes"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dialog_bottom_btn_text_size" />
+<!--            android:background="@drawable/bg_dialog_bottom_right"-->
+
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

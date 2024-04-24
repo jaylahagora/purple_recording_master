@@ -1,0 +1,2 @@
+include ':app', ':vlcplayer'
+rootProject.name='RecordingPlugin'

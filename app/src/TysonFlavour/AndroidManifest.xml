@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.smartrecording.recordingplugin">
+
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <!-- for usb otg read files , Must Required don't remove-->
+    <uses-permission
+        android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
+        tools:ignore="ProtectedPermissions" />
+    <!--The phone must support USB host feature (OTG)-->
+    <uses-feature android:name="android.hardware.usb.host" />
+
+    <application
+        android:name=".app.MyApplication"
+        android:allowBackup="true"
+        android:banner="@drawable/tvbanner"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:persistent="true"
+        android:requestLegacyExternalStorage="true"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="m">
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+        <activity
+            android:name=".activity.MainActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.AppCompat.Dialog">
+            <intent-filter android:label="Recording">
+                <action android:name="android.intent.action.VIEW" />
+                <!--                <action android:name="android.intent.action.MAIN" />-->
+                <action android:name="android.intent.action.SEND" />
+
+                <!--                <category android:name="android.intent.category.LAUNCHER" />-->
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="video/*" />
+                <data android:mimeType="*/*" />
+                <!-- do not remove below line,otherwise app won't found by other app-->
+                <data android:scheme="" />
+                <data android:scheme="file" />
+                <!--                <data android:scheme="ftp"/>-->
+                <data android:scheme="content" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <!--                <data android:host="*"/>-->
+
+            </intent-filter>
+
+        </activity>
+
+        <service
+            android:name=".service.RecordingService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".service.RecordingService2"
+            android:enabled="true"
+            android:exported="true" />
+
+        <receiver
+            android:name=".receiver.MyBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.purple.recording.plugin" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".receiver.MyBroadcastReceiver2"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.purple.recording.plugin2" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".receiver.SensorRestarterBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:label="RestartServiceWhenStopped" />
+        <receiver
+            android:name=".service.RecordingService$MyReceiver"
+            android:enabled="true"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="stoprecordingintent" />
+            </intent-filter>
+
+        </receiver>
+        <receiver
+            android:name=".service.RecordingService2$MyReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="stoprecordingintent2" />
+            </intent-filter>
+
+        </receiver>
+
+
+        <activity
+            android:name=".activity.RecordingActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="sensorLandscape">
+            <intent-filter android:label="Recording">
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".activity.DialogActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.AppCompat.Dialog" />
+        <activity
+            android:name=".activity.VideoPlayerActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name=".activity.ErrorActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.AppCompat.Dialog" />
+
+        <receiver android:name=".receiver.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
+        <!--        <provider-->
+        <!--            android:name="com.github.mjdev.libaums.recordingstorageprovider.UsbDocumentProvider"-->
+        <!--            android:authorities="com.github.mjdev.libaums.recordingstorageprovider.documents"-->
+        <!--            android:enabled="@bool/isAtLeastKitKat"-->
+        <!--            android:exported="true"-->
+        <!--            android:grantUriPermissions="true"-->
+        <!--            android:permission="android.permission.MANAGE_DOCUMENTS">-->
+        <!--            <intent-filter>-->
+        <!--                <action android:name="android.content.action.DOCUMENTS_PROVIDER" />-->
+        <!--            </intent-filter>-->
+        <!--        </provider>-->
+    </application>
+
+</manifest>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/black_opacity_seventy">
+
+    <LinearLayout
+        android:layout_width="@dimen/dialog_width"
+        android:id="@+id/ll_dialog_storagebg"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+
+        android:elevation="@dimen/dialog_elevation"
+        android:orientation="vertical">
+<!--        android:background="@drawable/bg_dialog"-->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/text_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="@dimen/storage_title_lr_margin"
+                android:fontFamily="@font/roboto_regular_400"
+                android:gravity="center_vertical"
+                android:text="@string/storage_select_folder"
+                android:textColor="@color/white"
+                android:textSize="@dimen/storage_title_text_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/text_current_folder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_title"
+                android:layout_marginTop="0dp"
+                android:text="@string/storage_current_folder_storage"
+                android:textColor="@color/white_opacity_seventy"
+                android:textSize="@dimen/storage_current_folder_text_size" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:id="@+id/view_dialogstorage"
+            android:layout_marginStart="@dimen/storage_view_lr_margin"
+            android:layout_marginTop="@dimen/storage_view_tb_margin"
+            android:layout_marginEnd="@dimen/storage_view_lr_margin"
+            android:layout_marginBottom="@dimen/storage_view_tb_margin"
+            />
+<!--        android:background="@color/selected_color"-->
+        <androidx.leanback.widget.VerticalGridView
+            android:id="@+id/recycler_storage"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/storage_recycler_height"
+            android:layout_marginLeft="@dimen/storage_view_lr_margin"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="@dimen/storage_view_lr_margin" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dialog_bottom_ll_btn_height"
+            android:layout_marginTop="@dimen/dialog_bottom_ll_top_margin"
+            android:background="@drawable/bg_dialog_bottom"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/btn_cancel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:layout_weight="1"
+
+                android:focusable="true"
+                android:fontFamily="@font/roboto_medium_500"
+                android:gravity="center"
+                android:text="@string/dialog_cancel"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dialog_bottom_btn_text_size" />
+<!--            android:background="@drawable/bg_dialog_bottom_left"-->
+
+
+            <TextView
+                android:id="@+id/btn_ok"
+                android:layout_width="225dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:layout_weight="1"
+
+                android:focusable="true"
+                android:fontFamily="@font/roboto_medium_500"
+                android:gravity="center"
+                android:text="@string/dialog_ok"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dialog_bottom_btn_text_size" />
+<!--            android:background="@drawable/bg_dialog_bottom_right"-->
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

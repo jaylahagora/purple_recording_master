@@ -1,0 +1,10 @@
+<resources>
+    <string name="unknown">Unknown</string>
+    <string name="currently_playing_on_cast">Currently Playing on Cast</string>
+
+    <string name="dialog_really">Really ?</string>
+    <string name="dialog_are_you_sure_want_to_exit_player">Are you sure want to exit this player?</string>
+
+    <string name="dialog_no">No</string>
+    <string name="dialog_yes">Yes</string>
+</resources>

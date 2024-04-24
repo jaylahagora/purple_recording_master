@@ -1,0 +1,209 @@
+apply plugin: 'com.android.application'
+
+android {
+    useLibrary 'org.apache.http.legacy'
+    compileSdkVersion 33
+    buildToolsVersion "29.0.3"
+    defaultConfig {
+        applicationId "com.purple.recording.plugin"
+        minSdkVersion 21
+        targetSdkVersion 33
+        versionCode 5
+        versionName "1.1"
+        multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        WhitakerFlavour {
+            storeFile file('keys/whitaker.jks')
+            storePassword '7737662477'
+            keyPassword '7737662477'
+            keyAlias = 'whitaker'
+        }
+
+        PurpleFlavour {
+            storeFile file('keys/keystore_purple.jks')
+            storePassword "7737662477"
+            keyAlias "purpletv"
+            keyPassword "7737662477"
+        }
+
+        PurpleModernFlavour {
+            storeFile file('keys/modernrecordingpluginnew')
+            storePassword "7737662477"
+            keyAlias "purpletv"
+            keyPassword "7737662477"
+        }
+
+        TysonFlavour {
+            storeFile file('keys/tyson.jks')
+            storePassword '7737662477'
+            keyPassword '7737662477'
+            keyAlias = 'tyson'
+        }
+
+        StrmzFlavour {
+            storeFile file('keys/tyson.jks')
+            storePassword '7737662477'
+            keyPassword '7737662477'
+            keyAlias = 'tyson'
+        }
+
+    }
+
+    flavorDimensions "version"
+    productFlavors {
+
+        WhitakerFlavour {
+            applicationId "com.record.whitker.plugin"
+            minSdkVersion 19
+            targetSdkVersion 30
+            versionCode 1
+            versionName "1.0"
+            multiDexEnabled true
+
+        }
+
+
+        PurpleFlavour {
+            applicationId "com.purple.video.record.plugin"
+            minSdkVersion 19
+            targetSdkVersion 30
+            versionCode 15
+            versionName "1.1"
+            multiDexEnabled true
+
+        }
+
+        PurpleModernFlavour {
+            applicationId "com.purple.smart.recordingplugin"
+            minSdkVersion 21
+            targetSdkVersion 33
+            versionCode 8
+            versionName "1.4"
+            multiDexEnabled true
+            buildConfigField 'String', 'gkje__00hu', "\"https://clientsapp.b-cdn.net/handle/bbtv.json\""
+
+        }
+
+        TysonFlavour {
+            applicationId "com.record.tyson.plugin"
+            minSdkVersion 19
+            targetSdkVersion 30
+            versionCode 1
+            versionName "1.0"
+            multiDexEnabled true
+            buildConfigField 'String', 'gkje__00hu', "\"https://clientsapp.b-cdn.net/handle/bbtv.json\""
+
+
+        }
+
+        StrmzFlavour {
+            applicationId "com.record.tyson.plugin"
+            minSdkVersion 19
+            targetSdkVersion 30
+            versionCode 1
+            versionName "1.0"
+            multiDexEnabled true
+            buildConfigField 'String', 'gkje__00hu', "\"https://clientsapp.b-cdn.net/handle/bbtv.json\""
+
+
+        }
+
+
+    }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'armeabi-v7a', 'arm64-v8a', 'x86_64'
+            universalApk true
+        }
+    }
+
+    project.ext.versionCodes = ['armeabi-v7a': 1, 'arm64-v8a': 2, 'x86': 3, 'x86_64': 4]
+
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            output.versionCodeOverride =
+                    project.ext.versionCodes.get(output.getFilter(
+                            com.android.build.OutputFile.ABI), 0) * 10000000 + variant.versionCode
+        }
+    }
+
+    buildTypes {
+        release {
+
+            productFlavors.WhitakerFlavour.signingConfig signingConfigs.WhitakerFlavour
+            productFlavors.TysonFlavour.signingConfig signingConfigs.TysonFlavour
+            productFlavors.StrmzFlavour.signingConfig signingConfigs.StrmzFlavour
+            productFlavors.PurpleFlavour.signingConfig signingConfigs.PurpleFlavour
+            productFlavors.PurpleModernFlavour.signingConfig signingConfigs.PurpleModernFlavour
+
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+    sourceSets {
+        TysonFlavour {
+            java.srcDirs('src/TysonFlavour/java')
+        }
+        StrmzFlavour {
+            java.srcDirs('src/StrmzFlavour/java')
+        }
+        PurpleFlavour {
+            java.srcDirs('src/main/java')
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test:runner:1.4.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation project(':vlcplayer')
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'android.arch.persistence.room:runtime:1.1.1'
+    annotationProcessor 'android.arch.persistence.room:compiler:1.1.1'
+    compileOnly 'com.android.support:support-annotations:28.0.0'
+    //compileOnly 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    implementation 'jp.wasabeef:glide-transformations:3.3.0'
+    testImplementation 'org.robolectric:robolectric:4.3.1'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:3.4.1'
+    testImplementation("com.squareup.okhttp3:okhttp-urlconnection:4.9.0")
+    implementation('com.squareup.okhttp3:okhttp:4.9.3') {
+
+        force = true //API 19 support
+    }
+    implementation 'com.google.code.gson:gson:2.10'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.leanback:leanback:1.1.0-beta01'
+    implementation 'com.valdesekamdem.library:md-toast:0.9.0'
+    implementation files('libs/jcifs-1.3.18.jar')
+    //  implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
+
+    implementation 'org.greenrobot:eventbus:3.3.1'
+    /* for ssl handling */
+    implementation 'com.google.android.gms:play-services-safetynet:18.0.1'
+    implementation(name: 'persistentcookiejar', ext: 'aar')
+
+    def appCenterSdkVersion = '5.0.0'
+    implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
+    implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
+
+
+}

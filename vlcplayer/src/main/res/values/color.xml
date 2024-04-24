@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ffffff</color>
+    <color name="colorPrimaryDark">#ffffff</color>
+    <color name="colorAccent">#ffffff</color>
+    <color name="color_btn_select">#99FF4081</color>
+    <color name="player_controller">#C51B1C</color>
+    <color name="player_whole_bg">#CC000000</color>
+    <color name="selected_color">#e56900</color>
+    <color name="text_epg_now">#FFFFEB3B</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="white_opacity_twenty">#33ffffff</color>
+    <color name="black">#000000</color>
+
+    <color name="black_opacity_seventy">#b2000000</color>
+    <color name="color_dialog_bg">#2A0A31</color>
+    <color name="focused_color">#FFF</color>
+    <color name="white_opacity_seventy">#b3ffffff</color>
+</resources>

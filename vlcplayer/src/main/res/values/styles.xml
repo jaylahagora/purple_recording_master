@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ThemeDialog" parent="android:Theme.Holo.Light.Dialog">
+        <!--<item name="android:windowMinWidthMajor">70%</item>-->
+        <!--<item name="android:windowMinWidthMinor">70%</item>-->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="lib_media_playerAdjustSeekBar" parent="android:Widget">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/custom_percentage_square_corner_progressbars</item>
+        <item name="android:indeterminateDrawable">@drawable/custom_percentage_square_corner_progressbars</item>
+        <item name="android:thumb">@drawable/player_seek_thumb_selector</item>
+        <item name="android:focusable">true</item>
+        <item name="android:thumbOffset">0dp</item>
+        <item name="android:paddingLeft">0dip</item>
+        <item name="android:paddingRight">0dip</item>
+        <item name="android:paddingStart">0dip</item>
+        <item name="android:paddingEnd">0dip</item>
+    </style>
+
+</resources>

@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">RecordingPlugin</string>
+    <string name="defaultrecordpath">PurpleRecording</string>
+    <string name="dialog_write_access_required_sd_card">Write Access Required (SD-Card)</string>
+    <string name="dialog_ins_write_access_required_sd_card">Please choose the root directory of %s to grant write access to operate.</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_add_epg">ADD EPG</string>
+    <string name="dialog_ok">OK</string>
+    <string name="recording_path">Recording Path :</string>
+    <string name="recording_change_directory">Change Directory</string>
+    <string name="recording_file_manager">File Manager</string>
+    <string name="str_error_no_data_found">No Data Found.</string>
+    <string name="recording_select_recording_directory">Select Recording Directory</string>
+    <string name="recording_save_to">Recording Save To :</string>
+    <string name="str_dashboard_recording">Recording</string>
+    <string name="setting_24_hour">24 hour</string>
+    <string name="str_delete">Delete</string>
+    <string name="longpressed_popup_play">Play</string>
+    <string name="popup_stop_recording">Stop Recording</string>
+    <string name="popup_close">Close</string>
+    <string name="str_remove_from_favourite">Remove From Favourites</string>
+    <string name="storage_select_folder">Select Folder</string>
+    <string name="storage_current_folder_storage">/storage</string>
+    <string name="str_alert">Alert !</string>
+    <string name="are_you_sure_want_to_delete_s">Are you sure want to delete %s ?</string>
+    <string name="dialog_no">No</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="live_group_s">Group : %s</string>
+    <string name="fragment_live_add_playlist">Add Playlist</string>
+    <string name="open">Open</string>
+    <string name="error">Error</string>
+    <string name="needs_access">Write Access Required</string>
+    <string name="needs_access_summary">Please choose the root directory  </string>
+    <string name="needs_access_summary1">to grant write access to operate </string>
+</resources>

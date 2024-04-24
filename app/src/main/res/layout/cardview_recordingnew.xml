@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frame_recording"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="0dp"
+    android:focusable="true">
+<!--    android:paddingLeft="@dimen/recording_schedule_lr_padding"-->
+<!--    android:paddingTop="@dimen/recording_schedule_tb_padding"-->
+<!--    android:paddingRight="@dimen/recording_schedule_lr_padding"-->
+<!--    android:paddingBottom="@dimen/recording_schedule_tb_padding"-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/llcover"
+        android:duplicateParentState="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:weightSum="10">
+
+        <TextView
+            android:id="@+id/text_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:duplicateParentState="true"
+            android:ellipsize="end"
+            android:fontFamily="@font/roboto_regular_400"
+            android:maxLines="1"
+            android:paddingLeft="@dimen/recording_schedule_lr_padding"
+            android:paddingRight="@dimen/recording_schedule_lr_padding"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="@dimen/recording_schedule_name_text_size"
+            android:textStyle="bold" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/recording_schedule_lr_padding"
+            android:paddingEnd="@dimen/recording_schedule_lr_padding"
+            android:visibility="visible"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/text_size"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:duplicateParentState="true"
+                android:ellipsize="end"
+                android:fontFamily="@font/roboto_regular_400"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:text=""
+                android:textColor="@color/white_opacity_seventy"
+                android:textSize="@dimen/recording_schedule_time_text_size"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                android:id="@+id/text_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:duplicateParentState="true"
+                android:ellipsize="end"
+                android:fontFamily="@font/roboto_regular_400"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/recording_schedule_lr_padding"
+                android:paddingRight="@dimen/recording_schedule_lr_padding"
+                android:text=""
+                android:textColor="@color/white_opacity_seventy"
+                android:textSize="@dimen/recording_schedule_time_text_size" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            app:srcCompat="@drawable/ic_play"
+
+            />
+
+        <TextView
+            android:id="@+id/text_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:ellipsize="end"
+            android:fontFamily="@font/roboto_medium_500"
+            android:maxLines="1"
+            android:paddingLeft="@dimen/recording_schedule_lr_padding"
+            android:paddingRight="@dimen/recording_schedule_lr_padding"
+            android:text=""
+            android:textColor="@color/selected_color"
+            android:textSize="@dimen/recording_schedule_time_text_size"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_gravity="bottom"
+        android:background="#FF260C35" />
+</FrameLayout>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/popup_cardview_height"
+        android:background="@drawable/bg_popup_item"
+        android:duplicateParentState="true"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:padding="@dimen/popup_cardview_layout_padding">
+
+            <ImageView
+                android:id="@+id/image_popup_item"
+                android:layout_width="@dimen/popup_cardview_imageview_size"
+                android:layout_height="@dimen/popup_cardview_imageview_size"
+                android:padding="@dimen/popup_cardview_imageview_padding"
+                app:srcCompat="@drawable/ic_menu_refresh_movie_svg"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/text_popup_item"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/popup_cardview_rl_margin"
+                android:gravity="center_vertical"
+                android:text="@string/str_remove_from_favourite"
+                android:textColor="@color/black"
+                android:textSize="@dimen/popup_cardview_text_size" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black_opacity_twenty" />
+    </LinearLayout>
+
+
+</FrameLayout>

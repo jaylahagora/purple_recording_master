@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="0dp"
+    android:focusable="true"
+    android:paddingBottom="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/ll_cv_storage"
+        android:layout_height="@dimen/storage_item_height"
+
+        android:duplicateParentState="true"
+        android:orientation="horizontal"
+        android:weightSum="1">
+<!--        android:background="@drawable/bg_storage_card"-->
+
+        <ImageView
+            android:id="@+id/storage_type_image"
+            android:layout_width="@dimen/storage_item_img_width"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/storage_item_lr_margin"
+            android:duplicateParentState="true"
+            android:padding="@dimen/storage_item_img_padding"
+            app:srcCompat="@drawable/ic_smart_tv_svg" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:duplicateParentState="true"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/storage_item_ll_tb_padding"
+            android:paddingBottom="@dimen/storage_item_ll_tb_padding">
+
+            <TextView
+                android:id="@+id/folder_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:duplicateParentState="true"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingStart="@dimen/storage_item_fn_lr_padding"
+                android:paddingTop="0dp"
+                android:paddingEnd="@dimen/storage_item_fn_lr_padding"
+                android:paddingBottom="0dp"
+                android:text=""
+                android:textColor="@color/white"
+                android:textSize="@dimen/storage_item_fn_text_size"
+                android:textStyle="normal" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/storage_item_fn_lr_padding"
+                android:paddingEnd="@dimen/storage_item_fn_lr_padding"
+                android:visibility="gone"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/text_show_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:duplicateParentState="true"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingTop="0dp"
+                    android:paddingEnd="@dimen/storage_item_fn_lr_padding"
+                    android:paddingBottom="0dp"
+                    android:text=""
+                    android:textColor="@color/white_opacity_seventy"
+                    android:textSize="@dimen/storage_item_sn_text_size" />
+
+                <TextView
+                    android:id="@+id/text_show_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:duplicateParentState="true"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingStart="@dimen/storage_item_fn_lr_padding"
+                    android:paddingTop="0dp"
+                    android:paddingEnd="@dimen/storage_item_fn_lr_padding"
+                    android:paddingBottom="0dp"
+                    android:text=""
+                    android:textColor="@color/white_opacity_seventy"
+                    android:textSize="@dimen/storage_item_sn_text_size" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>
