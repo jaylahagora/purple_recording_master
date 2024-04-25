@@ -1,9 +1,19 @@
 package com.smartrecording.recordingplugin.fragment;
 
 
-import static android.content.Context.RECEIVER_EXPORTED;
+import static com.purple.iptv.player.utils.Config._REMAININGTIIME;
+import static com.purple.iptv.player.utils.Config._downloadstatus;
+import static com.purple.iptv.player.utils.UtilConstant.PKGFORRECORDING;
+import static com.purple.iptv.player.utils.UtilConstant.ToastE;
+import static com.purple.iptv.player.utils.UtilMethods.parseSpeed;
+import static com.smartrecording.recordingplugin.utils.CommonMethods.appInstalledOrNot;
+import static com.smartrecording.recordingplugin.utils.Constant.MY_TRIGGER;
+import static com.smartrecording.recordingplugin.utils.Constant.MY_TRIGGER1;
+import static com.smartrecording.recordingplugin.utils.Constant.RECORDING_FILENAME;
+import static com.smartrecording.recordingplugin.utils.Constant._REMAININGTIIMESTR;
+import static com.smartrecording.recordingplugin.utils.Constant._downloadspeed;
+import static com.smartrecording.recordingplugin.utils.Constant.isAndroid10_or_Above;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -17,7 +27,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -34,7 +43,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -46,8 +54,7 @@ import com.purple.iptv.player.utils.Config;
 import com.purple.iptv.player.utils.ITrafficSpeedListener;
 import com.purple.iptv.player.utils.TrafficSpeedMeasurer;
 import com.purple.iptv.player.utils.UtilMethods;
-import com.smartrecording.recordingplugin.utils.FileUtils;
-import com.xunison.recordingplugin.R;
+import com.purple.iptv.player.views.PageHeaderView;
 import com.smartrecording.recordingplugin.activity.RecordingActivity;
 import com.smartrecording.recordingplugin.adapter.PopupAdapter;
 import com.smartrecording.recordingplugin.adapter.RecordingMultiAdapter;
@@ -63,7 +70,8 @@ import com.smartrecording.recordingplugin.model.RecordingScheduleModel;
 import com.smartrecording.recordingplugin.service.RecordingService;
 import com.smartrecording.recordingplugin.service.RecordingService2;
 import com.smartrecording.recordingplugin.utils.CommonMethods;
-import com.purple.iptv.player.views.PageHeaderView;
+import com.smartrecording.recordingplugin.utils.FileUtils;
+import com.xunison.recordingplugin.R;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -78,27 +86,22 @@ import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
-import static com.purple.iptv.player.utils.Config._REMAININGTIIME;
-import static com.purple.iptv.player.utils.Config._downloadstatus;
-import static com.purple.iptv.player.utils.UtilConstant.PKGFORRECORDING;
-import static com.purple.iptv.player.utils.UtilConstant.ToastE;
-import static com.purple.iptv.player.utils.UtilMethods.parseSpeed;
-
-import static com.smartrecording.recordingplugin.utils.CommonMethods.appInstalledOrNot;
-import static com.smartrecording.recordingplugin.utils.Constant.MY_TRIGGER;
-import static com.smartrecording.recordingplugin.utils.Constant.MY_TRIGGER1;
-import static com.smartrecording.recordingplugin.utils.Constant.RECORDING_FILENAME;
-import static com.smartrecording.recordingplugin.utils.Constant._REMAININGTIIMESTR;
-import static com.smartrecording.recordingplugin.utils.Constant._downloadspeed;
-import static com.smartrecording.recordingplugin.utils.Constant.isAndroid10_or_Above;
-
 
 public class RecordingFragment extends Fragment implements View.OnClickListener {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "RecordingFragment";
-
-   // public static String[] PERMISSION_LIST = {/*Manifest.permission.WRITE_EXTERNAL_STORAGE,*/ Manifest.permission.READ_EXTERNAL_STORAGE};
+    private static final boolean SHOW_SPEED_IN_BITS = false;
+    public String _serviceRunningfilename = "";
+    public String _serviceRunningfilename2 = "";
+    MyReceiver myReceiver;
+    MyReceiverfors2 myReceiverfors2;
+    boolean issss = true;
+    boolean issss2 = true;
+    String storage_path;
+    RecordingMultiAdapter dashBoardMultiAdapter;
+    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+    // public static String[] PERMISSION_LIST = {/*Manifest.permission.WRITE_EXTERNAL_STORAGE,*/ Manifest.permission.READ_EXTERNAL_STORAGE};
     private String mParam1;
     private String mParam2;
     private RecyclerView recycler_category;
@@ -115,8 +118,6 @@ public class RecordingFragment extends Fragment implements View.OnClickListener 
     private ArrayList<BaseModel> mListnewfortommorow;
     private ArrayList<BaseModel> mListnewforfuture;
     private ArrayList<BaseModel> mListnewforalreadyrecorded;
-
-
     private PageHeaderView header_view;
     private PopupWindow popupWindow;
     private int currentSelectedPosition;
@@ -126,23 +127,28 @@ public class RecordingFragment extends Fragment implements View.OnClickListener 
     private LinearLayout llcover2;
     private TextView text_name, text_size, text_time, text_status;
     private TextView text_name2, text_size2, text_time2, text_status2;
-
-    private static final boolean SHOW_SPEED_IN_BITS = false;
     private TrafficSpeedMeasurer mTrafficSpeedMeasurer;
     //today ,tommorow
     private SimpleDateFormat simpleDateFormat;
+    private ITrafficSpeedListener mStreamSpeedListener = new ITrafficSpeedListener() {
 
-    MyReceiver myReceiver;
-    MyReceiverfors2 myReceiverfors2;
-    boolean issss = true;
-    boolean issss2 = true;
+        @Override
+        public void onTrafficSpeedMeasured(final double upStream, final double downStream) {
+            mContext.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    String upStreamSpeed = parseSpeed(upStream, SHOW_SPEED_IN_BITS);
+                    String downStreamSpeed = parseSpeed(downStream, SHOW_SPEED_IN_BITS);
+                    text_downloadspeed.setText("Your Internet Speed: ⇑ " + upStreamSpeed + " - " + "⇓ " + downStreamSpeed);
+                }
+            });
+        }
+    };
+    private ArrayList<RecordingScheduleModel> mListfordeletion;
 
     public RecordingFragment() {
 
     }
-
-    public String _serviceRunningfilename = "";
-    public String _serviceRunningfilename2 = "";
 
     public static RecordingFragment newInstance(String param1, String param2) {
         RecordingFragment fragment = new RecordingFragment();
@@ -153,17 +159,65 @@ public class RecordingFragment extends Fragment implements View.OnClickListener 
         return fragment;
     }
 
+    public static StateListDrawable getSelectorDrawableRound(int normalcolor, int focusecolor) {
+        StateListDrawable out = new StateListDrawable();
+        out.addState(new int[]{-android.R.attr.state_focused}, createNormalDrawablewithcircle(normalcolor));
+        out.addState(new int[]{android.R.attr.state_focused}, createNormalDrawablewithcircle(focusecolor));
+
+        return out;
+    }
+
+    public static StateListDrawable getSelectorDrawableforcover(int normalcolor, int focusecolor, int strokecolor1) {
+        StateListDrawable out = new StateListDrawable();
+        out.addState(new int[]{-android.R.attr.state_focused}, createNormalDrawablewithstroke(normalcolor, strokecolor1));
+        out.addState(new int[]{android.R.attr.state_focused}, createNormalDrawablewithstroke(focusecolor, strokecolor1));
+
+        return out;
+    }
+
+    public static StateListDrawable getSelectorDrawable(int normalcolor, int focusecolor) {
+        StateListDrawable out = new StateListDrawable();
+        out.addState(new int[]{-android.R.attr.state_focused}, createNormalDrawable(normalcolor));
+        out.addState(new int[]{android.R.attr.state_focused}, createNormalDrawable(focusecolor));
+
+        return out;
+    }
+
+    public static GradientDrawable createNormalDrawable(int color) {
+        GradientDrawable out = new GradientDrawable();
+        out.setCornerRadius(5);
+
+        out.setColor(color);
+        return out;
+    }
+
+    public static GradientDrawable createNormalDrawablewithstroke(int color, int strokecolor) {
+        GradientDrawable out = new GradientDrawable();
+        out.setCornerRadius(5);
+        out.setColor(color);
+        out.setStroke(0, strokecolor);
+        return out;
+    }
+
+    public static GradientDrawable createNormalDrawablewithcircle(int color) {
+        GradientDrawable out = new GradientDrawable();
+        //   out.setCornerRadius(5);
+        out.setColor(color);
+        out.setShape(GradientDrawable.OVAL);
+        //  out.setStroke(0, strokecolor);
+        return out;
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         try {
-            if(mContext!=null){
+            if (mContext != null) {
                 mContext.unregisterReceiver(myReceiver);
                 mContext.unregisterReceiver(myReceiverfors2);
             }
             mTrafficSpeedMeasurer.stopMeasuring();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -196,21 +250,6 @@ public class RecordingFragment extends Fragment implements View.OnClickListener 
         if (mTrafficSpeedMeasurer != null)
             mTrafficSpeedMeasurer.registerListener(mStreamSpeedListener);
     }
-
-    private ITrafficSpeedListener mStreamSpeedListener = new ITrafficSpeedListener() {
-
-        @Override
-        public void onTrafficSpeedMeasured(final double upStream, final double downStream) {
-            mContext.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    String upStreamSpeed = parseSpeed(upStream, SHOW_SPEED_IN_BITS);
-                    String downStreamSpeed = parseSpeed(downStream, SHOW_SPEED_IN_BITS);
-                    text_downloadspeed.setText("Your Internet Speed: ⇑ " + upStreamSpeed + " - " + "⇓ " + downStreamSpeed);
-                }
-            });
-        }
-    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -356,56 +395,6 @@ public class RecordingFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-
-    public static StateListDrawable getSelectorDrawableRound(int normalcolor, int focusecolor) {
-        StateListDrawable out = new StateListDrawable();
-        out.addState(new int[]{-android.R.attr.state_focused}, createNormalDrawablewithcircle(normalcolor));
-        out.addState(new int[]{android.R.attr.state_focused}, createNormalDrawablewithcircle(focusecolor));
-
-        return out;
-    }
-
-    public static StateListDrawable getSelectorDrawableforcover(int normalcolor, int focusecolor, int strokecolor1) {
-        StateListDrawable out = new StateListDrawable();
-        out.addState(new int[]{-android.R.attr.state_focused}, createNormalDrawablewithstroke(normalcolor, strokecolor1));
-        out.addState(new int[]{android.R.attr.state_focused}, createNormalDrawablewithstroke(focusecolor, strokecolor1));
-
-        return out;
-    }
-
-    public static StateListDrawable getSelectorDrawable(int normalcolor, int focusecolor) {
-        StateListDrawable out = new StateListDrawable();
-        out.addState(new int[]{-android.R.attr.state_focused}, createNormalDrawable(normalcolor));
-        out.addState(new int[]{android.R.attr.state_focused}, createNormalDrawable(focusecolor));
-
-        return out;
-    }
-
-    public static GradientDrawable createNormalDrawable(int color) {
-        GradientDrawable out = new GradientDrawable();
-        out.setCornerRadius(5);
-
-        out.setColor(color);
-        return out;
-    }
-
-    public static GradientDrawable createNormalDrawablewithstroke(int color, int strokecolor) {
-        GradientDrawable out = new GradientDrawable();
-        out.setCornerRadius(5);
-        out.setColor(color);
-        out.setStroke(0, strokecolor);
-        return out;
-    }
-
-    public static GradientDrawable createNormalDrawablewithcircle(int color) {
-        GradientDrawable out = new GradientDrawable();
-        //   out.setCornerRadius(5);
-        out.setColor(color);
-        out.setShape(GradientDrawable.OVAL);
-        //  out.setStroke(0, strokecolor);
-        return out;
-    }
-
     private void bindData() {
         setHeaderLayout();
 //        if (mContext.connectionInfoModel != null) {
@@ -417,8 +406,6 @@ public class RecordingFragment extends Fragment implements View.OnClickListener 
         mTrafficSpeedMeasurer = new TrafficSpeedMeasurer(TrafficSpeedMeasurer.TrafficType.ALL);
         mTrafficSpeedMeasurer.startMeasuring();
     }
-
-    String storage_path;
 
     @SuppressLint("SetTextI18n")
     private void loadData() {
@@ -456,106 +443,40 @@ public class RecordingFragment extends Fragment implements View.OnClickListener 
         header_view.header_menu.setVisibility(View.GONE);
     }
 
-
-    @SuppressLint("StaticFieldLeak")
-    private class dataTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-            progressBar.requestFocus();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            mList = new ArrayList<>();
-            scheduleRecordingData();// get list here for today,tomorrow, future
-            splitdatabydate();//split data by given list
-            loadFiles();// load already recorded files
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            progressBar.setVisibility(View.GONE);
-            //   setRecycler(mList);
-            Setad();
-
-        }
-
-
-        private void loadFiles() {
-            mListnewforalreadyrecorded = new ArrayList<>();
-//            String path = MyApplication.getInstance().getPrefManager().getRecordingStoragePath();
-            UtilMethods.LogMethod("Files123_", "Path: " + storage_path);
-
-            File directory = new File(storage_path);
-            File[] files = directory.listFiles();
-            if (files != null) {
-                Arrays.sort(files, (Comparator) (o1, o2) -> {
-
-                    if (((File) o1).lastModified() > ((File) o2).lastModified()) {
-                        return -1;
-                    } else if (((File) o1).lastModified() < ((File) o2).lastModified()) {
-                        return +1;
-                    } else {
-                        return 0;
-                    }
-                });
-                UtilMethods.LogMethod("Files1234_", "Size: " + files.length);
-                Set<String> currently_recording_list = MyApplication.getInstance().getPrefManager().
-                        getCurrentlyRecordingList();
-                UtilMethods.LogMethod("currently_recording_list_", String.valueOf(Arrays.toString(new Set[]{currently_recording_list})));
-                for (int i = 0; i < files.length; i++) {
-                    if (files[i].getPath().contains(".ts") ||
-                            files[i].getPath().contains(".mp4")) {
-                        RecordingModel model = new RecordingModel();
-                        //    Log.e(TAG, "loadFiles: _serviceRunningfilename->" + _serviceRunningfilename + " <-  file->" + files[i].getName());
-                        //  Log.e(TAG, "loadFiles: _serviceRunning.... " + _serviceRunningfilename.contains(files[i].getName()));
-                        model.setStatus(Config.RECORDING_COMPLETED);
-                        model.setLastModified(files[i].lastModified());
-                        model.setFileName(files[i].getName());
-                        model.setFilePath(files[i].getPath());
-                        model.setFileDownloadDate(UtilMethods.getTimeFromMilli(files[i].lastModified(),
-                                "HH:mm  dd-MMM-yyyy"));
-                        model.setFileSize(UtilMethods.convertByteToMB(files[i].length()));
-                        Log.e(TAG, "loadFiles:1 "+files[i].getName()  +"<--hello-->"+_serviceRunningfilename+" -- Storage path-->"+storage_path );
-                        Log.e(TAG, "loadFiles:2 "+files[i].getName()  +"<--hello-->"+_serviceRunningfilename2 );
-                        if (!files[i].getName().equals(_serviceRunningfilename) || !files[i].getName().equals(_serviceRunningfilename2)) {
-                            mList.add(model);
-                            mListnewforalreadyrecorded.add(model);
-                        }
-                    }
-                }
-                Addtoarraylist();
-            } else {
-                Log.e(TAG, "loadFiles: files is null");
-            }
-
-
-        }
-
-        private void scheduleRecordingData() {
-            List<RecordingScheduleModel> scheduleList = (mContext.pkgname != null && !mContext.pkgname.equals("")) ?
-                    DatabaseRoom.with(mContext).
-                            getAllScheduleRecordingwithpkgname(-1, mContext.pkgname) : DatabaseRoom.with(mContext).
-                    getAllScheduleRecording(-1, mContext.pkgname);
-            for (int i = 0; i < scheduleList.size(); i++) {
-                RecordingScheduleModel model = scheduleList.get(i);
-                if (model.getStartTime() < System.currentTimeMillis()) {
-                    deleteScheduleFromDatabase(model.getUid());
-                } else {
-                    mList.add(model);
-                }
-
-            }
-
-
-        }
-
-    }
+//    private void createfilemodel(String _serviceRunningfilename) {
+//        issss = false;
+//        String path = MyApplication.getInstance().getPrefManager().getRecordingStoragePath();
+//        UtilMethods.LogMethod("Files123_", "Path: " + path);
+//        File directory = new File(path);
+//        File[] files = directory.listFiles();
+//        Set<String> currently_recording_list = MyApplication.getInstance().getPrefManager().
+//                getCurrentlyRecordingList();
+//        if (files != null) {
+//            mListnew = new ArrayList<>();
+//            for (int i = 0; i < files.length; i++) {
+//                if (files[i].getPath().contains(".ts") ||
+//                        files[i].getPath().contains(".mp4")) {
+//                    RecordingModel model = new RecordingModel();
+//                    Log.e(TAG, "loadFiles:createfilemodel _serviceRunningfilename->" + _serviceRunningfilename + " <-  file->" + files[i].getName());
+//                    Log.e(TAG, "loadFiles:createfilemodel _serviceRunning.... " + _serviceRunningfilename.contains(files[i].getName()));
+//                    if (currently_recording_list.contains(files[i].getName()) || (!_serviceRunningfilename.equals("") && _serviceRunningfilename.contains(files[i].getName()))) {
+//                        model.setStatus(Config.RECORDING_RECORDING);
+//                    } else {
+//                        model.setStatus(Config.RECORDING_COMPLETED);
+//                    }
+//                    model.setLastModified(files[i].lastModified());
+//                    model.setFileName(files[i].getName());
+//                    model.setFilePath(files[i].getPath());
+//                    model.setFileDownloadDate(UtilMethods.getTimeFromMilli(files[i].lastModified(),
+//                            "HH:mm  dd-MMM-yyyy"));
+//                    model.setFileSize(UtilMethods.convertByteToMB(files[i].length()));
+//                    if (files[i].getName().equals(_serviceRunningfilename))
+//                        mListnew.add(model);
+//                }
+//            }
+//        }
+//        Log.e(TAG, "createfilemodel: mListnew:" + mListnew.size());
+//    }
 
     private void Addtoarraylist() {
         mList.addAll(mListnewfortoday);
@@ -631,44 +552,6 @@ public class RecordingFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-//    private void createfilemodel(String _serviceRunningfilename) {
-//        issss = false;
-//        String path = MyApplication.getInstance().getPrefManager().getRecordingStoragePath();
-//        UtilMethods.LogMethod("Files123_", "Path: " + path);
-//        File directory = new File(path);
-//        File[] files = directory.listFiles();
-//        Set<String> currently_recording_list = MyApplication.getInstance().getPrefManager().
-//                getCurrentlyRecordingList();
-//        if (files != null) {
-//            mListnew = new ArrayList<>();
-//            for (int i = 0; i < files.length; i++) {
-//                if (files[i].getPath().contains(".ts") ||
-//                        files[i].getPath().contains(".mp4")) {
-//                    RecordingModel model = new RecordingModel();
-//                    Log.e(TAG, "loadFiles:createfilemodel _serviceRunningfilename->" + _serviceRunningfilename + " <-  file->" + files[i].getName());
-//                    Log.e(TAG, "loadFiles:createfilemodel _serviceRunning.... " + _serviceRunningfilename.contains(files[i].getName()));
-//                    if (currently_recording_list.contains(files[i].getName()) || (!_serviceRunningfilename.equals("") && _serviceRunningfilename.contains(files[i].getName()))) {
-//                        model.setStatus(Config.RECORDING_RECORDING);
-//                    } else {
-//                        model.setStatus(Config.RECORDING_COMPLETED);
-//                    }
-//                    model.setLastModified(files[i].lastModified());
-//                    model.setFileName(files[i].getName());
-//                    model.setFilePath(files[i].getPath());
-//                    model.setFileDownloadDate(UtilMethods.getTimeFromMilli(files[i].lastModified(),
-//                            "HH:mm  dd-MMM-yyyy"));
-//                    model.setFileSize(UtilMethods.convertByteToMB(files[i].length()));
-//                    if (files[i].getName().equals(_serviceRunningfilename))
-//                        mListnew.add(model);
-//                }
-//            }
-//        }
-//        Log.e(TAG, "createfilemodel: mListnew:" + mListnew.size());
-//    }
-
-    RecordingMultiAdapter dashBoardMultiAdapter;
-    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-
     private void Setad() {
         baseFakeModelArrayList = new ArrayList<>();
         baseFakeModelArrayList.add(new BaseFakeModel(100));
@@ -707,8 +590,6 @@ public class RecordingFragment extends Fragment implements View.OnClickListener 
         //recycler_category.scrollToPosition(0);
         dashBoardMultiAdapter.notifyDataSetChanged();
     }
-
-    private ArrayList<RecordingScheduleModel> mListfordeletion;
 
     @SuppressLint("StaticFieldLeak")
 //    private void sendtorecordingagainalldata() {
@@ -803,8 +684,6 @@ public class RecordingFragment extends Fragment implements View.OnClickListener 
         return ((LinearLayoutManager) recyclerView.getLayoutManager())
                 .findFirstVisibleItemPosition();
     }
-//
-
 
     private void openPopupforcurrentrecording(View longPressedView) {
         if (popupWindow != null) {
@@ -874,6 +753,7 @@ public class RecordingFragment extends Fragment implements View.OnClickListener 
         }
 
     }
+//
 
     private void openPopupforcurrentrecording2(View longPressedView) {
         if (popupWindow != null) {
@@ -959,7 +839,6 @@ public class RecordingFragment extends Fragment implements View.OnClickListener 
         mContext.sendBroadcast(intent);
     }
 
-
     @SuppressLint("StaticFieldLeak")
     private void deleteScheduleFromDatabase(final long uid) {
         new AsyncTask<Void, Void, Void>() {
@@ -969,6 +848,106 @@ public class RecordingFragment extends Fragment implements View.OnClickListener 
                 return null;
             }
         }.execute();
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class dataTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.requestFocus();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mList = new ArrayList<>();
+            scheduleRecordingData();// get list here for today,tomorrow, future
+            splitdatabydate();//split data by given list
+            loadFiles();// load already recorded files
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            progressBar.setVisibility(View.GONE);
+            //   setRecycler(mList);
+            Setad();
+
+        }
+
+
+        private void loadFiles() {
+            mListnewforalreadyrecorded = new ArrayList<>();
+//            String path = MyApplication.getInstance().getPrefManager().getRecordingStoragePath();
+            UtilMethods.LogMethod("Files123_", "Path: " + storage_path);
+
+            File directory = new File(storage_path);
+            File[] files = directory.listFiles();
+            if (files != null) {
+                Arrays.sort(files, (Comparator) (o1, o2) -> {
+
+                    if (((File) o1).lastModified() > ((File) o2).lastModified()) {
+                        return -1;
+                    } else if (((File) o1).lastModified() < ((File) o2).lastModified()) {
+                        return +1;
+                    } else {
+                        return 0;
+                    }
+                });
+                UtilMethods.LogMethod("Files1234_", "Size: " + files.length);
+                Set<String> currently_recording_list = MyApplication.getInstance().getPrefManager().
+                        getCurrentlyRecordingList();
+                UtilMethods.LogMethod("currently_recording_list_", String.valueOf(Arrays.toString(new Set[]{currently_recording_list})));
+                for (int i = 0; i < files.length; i++) {
+                    if (files[i].getPath().contains(".ts") ||
+                            files[i].getPath().contains(".mp4")) {
+                        RecordingModel model = new RecordingModel();
+                        //    Log.e(TAG, "loadFiles: _serviceRunningfilename->" + _serviceRunningfilename + " <-  file->" + files[i].getName());
+                        //  Log.e(TAG, "loadFiles: _serviceRunning.... " + _serviceRunningfilename.contains(files[i].getName()));
+                        model.setStatus(Config.RECORDING_COMPLETED);
+                        model.setLastModified(files[i].lastModified());
+                        model.setFileName(files[i].getName());
+                        model.setFilePath(files[i].getPath());
+                        model.setFileDownloadDate(UtilMethods.getTimeFromMilli(files[i].lastModified(),
+                                "HH:mm  dd-MMM-yyyy"));
+                        model.setFileSize(UtilMethods.convertByteToMB(files[i].length()));
+                        Log.e(TAG, "loadFiles:1 " + files[i].getName() + "<--hello-->" + _serviceRunningfilename + " -- Storage path-->" + storage_path);
+                        Log.e(TAG, "loadFiles:2 " + files[i].getName() + "<--hello-->" + _serviceRunningfilename2);
+                        if (!files[i].getName().equals(_serviceRunningfilename) || !files[i].getName().equals(_serviceRunningfilename2)) {
+                            mList.add(model);
+                            mListnewforalreadyrecorded.add(model);
+                        }
+                    }
+                }
+                Addtoarraylist();
+            } else {
+                Log.e(TAG, "loadFiles: files is null");
+            }
+
+
+        }
+
+        private void scheduleRecordingData() {
+            List<RecordingScheduleModel> scheduleList = (mContext.pkgname != null && !mContext.pkgname.equals("")) ?
+                    DatabaseRoom.with(mContext).
+                            getAllScheduleRecordingwithpkgname(-1, mContext.pkgname) : DatabaseRoom.with(mContext).
+                    getAllScheduleRecording(-1, mContext.pkgname);
+            for (int i = 0; i < scheduleList.size(); i++) {
+                RecordingScheduleModel model = scheduleList.get(i);
+                if (model.getStartTime() < System.currentTimeMillis()) {
+                    deleteScheduleFromDatabase(model.getUid());
+                } else {
+                    mList.add(model);
+                }
+
+            }
+
+
+        }
+
     }
 
     private class MyReceiver extends BroadcastReceiver {
